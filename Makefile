@@ -80,7 +80,7 @@ define Package/luci-app-open-box/install
 	ln -sf /opt/open-box/openwrt/bin/open-box $(1)/usr/bin/open-box
 
 	# 仅复制 _core 子目录内容，避免递归包含
-	$(INSTALL_DIR) $(1)/opt/open-box
+	$(INSTALL_DIR) $(1)/opt/open-box $(1)/opt/open-box/data
 	$(CP) $(PKG_BUILD_DIR)/_core/* $(1)/opt/open-box/
 	chmod -R 0755 $(1)/opt/open-box/bin $(1)/opt/open-box/node/bin $(1)/opt/open-box/openwrt/bin 2>/dev/null || true
 	chmod +x $(1)/opt/open-box/update.sh $(1)/opt/open-box/uninstall.sh 2>/dev/null || true
@@ -96,6 +96,16 @@ define Package/luci-app-open-box/prerm
 [ -n "$${IPKG_INSTROOT}" ] || {
 	/etc/init.d/openbox stop >/dev/null 2>&1 || true
 	/etc/init.d/openbox-panel stop >/dev/null 2>&1 || true
+}
+exit 0
+endef
+
+define Package/luci-app-open-box/postinst
+#!/bin/sh
+[ -n "$${IPKG_INSTROOT}" ] || {
+	rm -rf /tmp/luci-*cache* 2>/dev/null || true
+	/etc/init.d/rpcd restart >/dev/null 2>&1 || true
+	/etc/init.d/openbox-panel restart >/dev/null 2>&1 || true
 }
 exit 0
 endef
