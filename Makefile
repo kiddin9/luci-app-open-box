@@ -58,6 +58,7 @@ define Package/luci-app-open-box/install
 	$(INSTALL_DIR) $(1)/opt/open-box $(1)/opt/open-box/data
 	$(CP) $(PKG_BUILD_DIR)/_core/* $(1)/opt/open-box/
 	chmod -R 0755 $(1)/opt/open-box/bin $(1)/opt/open-box/node/bin $(1)/opt/open-box/openwrt/bin 2>/dev/null || true
+	chmod +x $(1)/opt/open-box/update.sh $(1)/opt/open-box/uninstall.sh 2>/dev/null || true
 	echo "3036" > $(1)/opt/open-box/data/panel-port
 
 	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/root/* $(1)/
