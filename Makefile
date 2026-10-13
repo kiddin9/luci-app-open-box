@@ -61,6 +61,7 @@ define Package/luci-app-open-box/install
 	echo "3036" > $(1)/opt/open-box/data/panel-port
 
 	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/root/* $(1)/
+	$(INSTALL_DIR) $(1)/etc/www
 	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/luci/htdocs/* $(1)/www/
 
 	# 安装系统服务与默认配置
