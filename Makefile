@@ -54,37 +54,24 @@ endef
 
 # 3. 安装与打包：同时铺装 LuCI 页面、系统脚本以及 /opt/open-box 核心
 define Package/luci-app-open-box/install
-	# 安装 LuCI 菜单与权限声明
-	$(INSTALL_DIR) $(1)/usr/share/luci/menu.d
-	$(INSTALL_DATA) ./root/usr/share/luci/menu.d/luci-app-openbox.json $(1)/usr/share/luci/menu.d/
-
-	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
-	$(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/luci-app-openbox.json $(1)/usr/share/rpcd/acl.d/
-
-	$(INSTALL_DIR) $(1)/www/luci-static/resources/view/openbox
-	$(INSTALL_DATA) ./root/www/luci-static/resources/view/openbox/main.js $(1)/www/luci-static/resources/view/openbox/
-
-	# 安装系统服务与默认配置
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./root/etc/init.d/openbox $(1)/etc/init.d/openbox
-	$(INSTALL_BIN) ./root/etc/init.d/openbox-panel $(1)/etc/init.d/openbox-panel
-
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./root/etc/config/openbox $(1)/etc/config/openbox
-
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./root/etc/uci-defaults/99-luci-app-openbox $(1)/etc/uci-defaults/99-luci-app-openbox
-
-	# 创建 CLI 管理命令软链接（直接指向 /opt/open-box/openwrt/bin/open-box 原版脚本）
-	$(INSTALL_DIR) $(1)/usr/bin
-	ln -sf /opt/open-box/openwrt/bin/open-box $(1)/usr/bin/open-box
-
 	# 仅复制 _core 子目录内容，避免递归包含
 	$(INSTALL_DIR) $(1)/opt/open-box $(1)/opt/open-box/data
 	$(CP) $(PKG_BUILD_DIR)/_core/* $(1)/opt/open-box/
 	chmod -R 0755 $(1)/opt/open-box/bin $(1)/opt/open-box/node/bin $(1)/opt/open-box/openwrt/bin 2>/dev/null || true
 	chmod +x $(1)/opt/open-box/update.sh $(1)/opt/open-box/uninstall.sh 2>/dev/null || true
 	echo "3036" > $(1)/opt/open-box/data/panel-port
+
+	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/root/* $(1)/
+	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/luci/htdocs/* $(1)/www/
+
+	# 安装系统服务与默认配置
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) $(1)/opt/open-box/openwrt/initd/openbox $(1)/etc/init.d/openbox
+	$(INSTALL_BIN) $(1)/opt/open-box/openwrt/initd/openbox-panel $(1)/etc/init.d/openbox-panel
+
+	# 创建 CLI 管理命令软链接（直接指向 /opt/open-box/openwrt/bin/open-box 原版脚本）
+	$(INSTALL_DIR) $(1)/usr/bin
+	ln -sf /opt/open-box/openwrt/bin/open-box $(1)/usr/bin/open-box
 endef
 
 define Package/luci-app-open-box/extra_provides
