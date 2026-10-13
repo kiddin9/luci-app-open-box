@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-open-box
-PKG_VERSION:=0.1.263
+PKG_VERSION:=0.1.320
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=liandu2024
@@ -61,9 +61,8 @@ define Package/luci-app-open-box/install
 	chmod +x $(1)/opt/open-box/update.sh $(1)/opt/open-box/uninstall.sh 2>/dev/null || true
 	echo "3036" > $(1)/opt/open-box/data/panel-port
 
-	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/root/* $(1)/
-	$(INSTALL_DIR) $(1)/etc/www
-	$(INSTALL_DATA) $(1)/opt/open-box/openwrt/luci/htdocs/* $(1)/www/
+	$(CP) $(1)/opt/open-box/openwrt/luci/root/* $(1)/
+	$(CP) $(1)/opt/open-box/openwrt/luci/htdocs/* $(1)/www/
 
 	# 安装系统服务与默认配置
 	$(INSTALL_DIR) $(1)/etc/init.d
