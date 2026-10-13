@@ -104,7 +104,7 @@ define Package/luci-app-open-box/postinst
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || {
 	rm -rf /tmp/luci-*cache* 2>/dev/null || true
-	/etc/init.d/rpcd restart >/dev/null 2>&1 || true
+	/etc/init.d/rpcd reload >/dev/null 2>&1 || true
 	/etc/init.d/openbox-panel restart >/dev/null 2>&1 || true
 }
 exit 0
