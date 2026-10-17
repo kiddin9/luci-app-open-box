@@ -55,7 +55,7 @@ endef
 # 3. 安装与打包：同时铺装 LuCI 页面、系统脚本以及 /opt/open-box 核心
 define Package/luci-app-open-box/install
 	# 仅复制 _core 子目录内容，避免递归包含
-	$(INSTALL_DIR) $(1)/opt/open-box $(1)/opt/open-box/data
+	$(INSTALL_DIR) $(1)/opt/open-box $(1)/opt/open-box/data  $(1)/www
 	$(CP) $(PKG_BUILD_DIR)/_core/* $(1)/opt/open-box/
 	chmod -R 0755 $(1)/opt/open-box/bin $(1)/opt/open-box/node/bin $(1)/opt/open-box/openwrt/bin 2>/dev/null || true
 	chmod +x $(1)/opt/open-box/update.sh $(1)/opt/open-box/uninstall.sh 2>/dev/null || true
@@ -102,7 +102,6 @@ define Package/luci-app-open-box/postrm
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || {
 	rm -rf /tmp/luci-*cache* 2>/dev/null || true
-	rm -rf /www/luci-static/resources/view/openbox 2>/dev/null || true
 	uci -q delete firewall.openbox_panel || true
 	uci -q delete firewall.openbox_dns || true
 	uci -q delete firewall.openbox_tun_forward || true
